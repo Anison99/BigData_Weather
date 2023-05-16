@@ -1,7 +1,13 @@
 import requests
 
+## --------------- WYSZUKIWANIE POGODY NA PODSTAWIE WSPÓŁRZĘDNYCH GEOGRAFICZNYCH ---------------
+## ---------------   DLA TARNOWA NA 5 DNI DO PRZODU ODŚWIEŻANA CO 3 GODZINY ----------------------
 def get_weather_data():
-    url = 'https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=a17a960f9fcd4f071a2bf3bd5bd570b0'
+   ## api_key = 'a17a960f9fcd4f071a2bf3bd5bd570b0'  # Wprowadź swój klucz API OpenWeatherMap
+   ## lat = 50.0128  # Współrzędne szerokości geograficznej dla Tarnowa
+   ## lon = 20.9884  # Współrzędne długości geograficznej dla Tarnowa
+   
+    url = 'https://api.openweathermap.org/data/2.5/forecast?lat=50.0128&lon=20.9884&appid=a17a960f9fcd4f071a2bf3bd5bd570b0'
 
     # Tworzenie żądania HTTP GET do API
     response = requests.get(url)
