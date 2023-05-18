@@ -14,32 +14,33 @@ c.execute('''CREATE TABLE IF NOT EXISTS pogoda_tarnow
               wilgotnosc INTEGER,
               opis TEXT)''')
 
-# Pobieranie danych pogodowych dla kolejnych 5 dni
+# Pobieranie danych pogodowych dla najbliższych 5 dni co 3 godziny
 api_key = 'a17a960f9fcd4f071a2bf3bd5bd570b0'
 city = 'Tarnów'
 
-# Pobieranie prognozy pogody dla kolejnych 5 dni
-url = f'http://api.openweathermap.org/data/2.5/forecast?lat=52.2297&lon=21.0122&exclude=current,minutely,hourly,alerts&units=metric&appid={api_key}'
+# Pobieranie prognozy pogody dla najbliższych 5 dni co 3 godziny
+url = f'http://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={api_key}'
 response = requests.get(url)
 data_api = response.json()
 
-daily_forecast = data_api['list']
-
-# Obecna data
-current_date = datetime.now().date()
+hourly_forecast = data_api['list']
 
 for i in range(5):
-    # Obliczanie daty dla danego dnia
-    date = (current_date + timedelta(days=i)).strftime('%Y-%m-%d')
+    # Obliczanie daty początkowej dla danego dnia
+    start_date = (datetime.now() + timedelta(days=i)).replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # Pobieranie danych pogodowych dla danego dnia
-    temperatura = daily_forecast[i]['main']['temp']
-    wilgotnosc = daily_forecast[i]['main']['humidity']
-    opis = daily_forecast[i]['weather'][0]['description']
+    for j in range(8):
+        # Obliczanie daty dla danego punktu czasowego
+        date = (start_date + timedelta(hours=(j * 3))).strftime('%Y-%m-%d %H:%M:%S')
 
-    # Wstawianie danych do bazy danych
-    c.execute("INSERT INTO pogoda_tarnow (data, temperatura, wilgotnosc, opis) VALUES (?, ?, ?, ?)",
-              (date, temperatura, wilgotnosc, opis))
+        # Pobieranie danych pogodowych dla danego punktu czasowego
+        temperatura = hourly_forecast[(i * 8) + j]['main']['temp']
+        wilgotnosc = hourly_forecast[(i * 8) + j]['main']['humidity']
+        opis = hourly_forecast[(i * 8) + j]['weather'][0]['description']
+
+        # Wstawianie danych do bazy danych
+        c.execute("INSERT INTO pogoda_tarnow (data, temperatura, wilgotnosc, opis) VALUES (?, ?, ?, ?)",
+                  (date, temperatura, wilgotnosc, opis))
 
 # Zapisywanie zmian i zamykanie bazy danych
 conn.commit()
