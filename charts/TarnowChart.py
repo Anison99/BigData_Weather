@@ -23,8 +23,8 @@ conn.close()
 
 # Tworzenie wykresu
 plt.figure(figsize=(10, 6))
-plt.plot(dates, temperatures, label='Temperatura (°C)')
-plt.plot(dates, humidities, label='Wilgotność (%)')
+plt.plot(dates, temperatures, 'o-', label='Temperatura (°C)')
+plt.plot(dates, humidities, 'o-', label='Wilgotność (%)')
 plt.xlabel('Data')
 plt.ylabel('Wartość')
 plt.title('Wykres pogodowy na najbliższe 5 dni - Tarnów')
